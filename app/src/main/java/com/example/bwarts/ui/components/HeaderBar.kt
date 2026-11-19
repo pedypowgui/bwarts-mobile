@@ -66,16 +66,6 @@ fun HeaderBar(
                 .padding(0.dp)
                 .height(40.dp)
         )
-//        Text(
-//            text = buildAnnotatedString {
-//                withStyle(style = SpanStyle(color = BwartsOrange, fontWeight = FontWeight.Bold, fontSize = 24.sp)) {
-//                    append("BW")
-//                }
-//                withStyle(style = SpanStyle(color = Color.White, fontWeight = FontWeight.Bold, fontSize = 24.sp)) {
-//                    append("arts")
-//                }
-//            }
-//        )
 
         // Pesquisa e carrinho
         Row(
