@@ -18,7 +18,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 @Composable
-fun ProductSection(
+fun ProdutoSecao(
     title: String,
     products: List<Product>,
     onProductClick: (Product) -> Unit = {},
@@ -29,7 +29,7 @@ fun ProductSection(
             .fillMaxWidth()
             .padding(vertical = 12.dp)
     ) {
-        // Section Title
+        // Título da seção
         Text(
             text = title,
             color = Color.White,
@@ -40,14 +40,14 @@ fun ProductSection(
 
         Spacer(modifier = Modifier.height(10.dp))
 
-        // Horizontal Product List
+        // Lista dos produtos com navegação horizontal
         LazyRow(
             contentPadding = PaddingValues(horizontal = 16.dp),
             horizontalArrangement = Arrangement.spacedBy(12.dp),
             modifier = Modifier.fillMaxWidth()
         ) {
             items(products) { product ->
-                ProductCard(
+                ProdutoCard(
                     product = product,
                     onProductClick = onProductClick
                 )

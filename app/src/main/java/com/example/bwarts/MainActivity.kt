@@ -27,7 +27,7 @@ import com.example.bwarts.ui.components.FooterSection
 import com.example.bwarts.ui.components.HeaderBar
 import com.example.bwarts.ui.components.PersonalizationBanner
 import com.example.bwarts.ui.components.Product
-import com.example.bwarts.ui.components.ProductSection
+import com.example.bwarts.ui.components.ProdutoSecao
 import com.example.bwarts.ui.components.PromoCarousel
 import com.example.bwarts.ui.theme.BwartsDarkBg
 import com.example.bwarts.ui.theme.BwartsTheme
@@ -111,34 +111,36 @@ fun HomeScreen() {
                     .padding(innerPadding)
                     .background(BwartsDarkBg)
             ) {
-                // 1. Promo Carousel Section
+                // Carrossel promocional
                 item {
                     PromoCarousel()
                 }
 
-                // 2. "Últimas novidades" Horizontal Section
+                // Ultimas novidades - produtos
                 item {
-                    ProductSection(
+                    ProdutoSecao (
                         title = "Últimas novidades",
                         products = ultimasNovidades,
                         onProductClick = { product ->
+                            // TODO: Mudar para nagevação entre as páginas aqui
                             Toast.makeText(context, "Clicou em: ${product.title}", Toast.LENGTH_SHORT).show()
                         }
                     )
                 }
 
-                // 3. "Baseado em suas pesquisas" Horizontal Section
+                // Baseado em suas pesquisas - produtos
                 item {
-                    ProductSection(
+                    ProdutoSecao (
                         title = "Baseado em suas pesquisas",
                         products = baseadoEmPesquisas,
                         onProductClick = { product ->
+                            // TODO: Mudar para nagevação entre as páginas aqui
                             Toast.makeText(context, "Clicou em: ${product.title}", Toast.LENGTH_SHORT).show()
                         }
                     )
                 }
 
-                // 4. Fixed Personalization Banner Section
+                // Banner de personalização
                 item {
                     PersonalizationBanner(
                         onBannerClick = {
@@ -147,7 +149,7 @@ fun HomeScreen() {
                     )
                 }
 
-                // 5. Footer Section
+                // Footer
                 item {
                     FooterSection(
                         onLinkClick = { link ->

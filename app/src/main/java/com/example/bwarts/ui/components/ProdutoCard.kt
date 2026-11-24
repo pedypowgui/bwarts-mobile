@@ -21,6 +21,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.bwarts.ui.theme.BwartsCardBg
@@ -35,7 +36,7 @@ data class Product(
 )
 
 @Composable
-fun ProductCard(
+fun ProdutoCard(
     product: Product,
     onProductClick: (Product) -> Unit = {},
     modifier: Modifier = Modifier
@@ -54,8 +55,8 @@ fun ProductCard(
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
         Column {
-            // Product Image (MDF Stack Illustration)
-            MdfSheetImage(
+            // Imagem do produto
+            imagemProdutoCard(
                 isFavorite = isFavorite,
                 onFavoriteToggle = { isFavorite = !isFavorite },
                 modifier = Modifier
