@@ -17,8 +17,11 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
@@ -29,6 +32,7 @@ import com.example.bwarts.ui.components.PersonalizationBanner
 import com.example.bwarts.ui.components.Product
 import com.example.bwarts.ui.components.ProdutoSecao
 import com.example.bwarts.ui.components.PromoCarousel
+import com.example.bwarts.ui.screens.ProdutoDetalhes
 import com.example.bwarts.ui.theme.BwartsDarkBg
 import com.example.bwarts.ui.theme.BwartsTheme
 import kotlinx.coroutines.launch
@@ -39,20 +43,75 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             BwartsTheme {
-                HomeScreen()
+                BwartsApp()
             }
         }
     }
 }
 
 @Composable
-fun HomeScreen() {
+fun BwartsApp() {
     val context = LocalContext.current
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
+    var selectedProduct by remember { mutableStateOf<Product?>(null) }
+
+    ModalNavigationDrawer(
+        drawerState = drawerState,
+        drawerContent = {
+            DrawerContent(
+                onItemSelect = { item ->
+                    scope.launch {
+                        drawerState.close()
+                    }
+                    if (item == "Home" || item == "Início") {
+                        selectedProduct = null
+                    } else {
+                        Toast.makeText(context, "Navegando para: $item", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            )
+        }
+    ) {
+        val currentProduct = selectedProduct
+        if (currentProduct != null) {
+            ProdutoDetalhes(
+                product = currentProduct,
+                onBack = { selectedProduct = null },
+                onProductClick = { product ->
+                    selectedProduct = product
+                },
+                onMenuClick = {
+                    scope.launch { drawerState.open() }
+                },
+                onSearchClick = {
+                    Toast.makeText(context, "Abrir busca de produtos", Toast.LENGTH_SHORT).show()
+                },
+                onCartClick = {
+                    Toast.makeText(context, "Abrir carrinho (3 itens)", Toast.LENGTH_SHORT).show()
+                }
+            )
+        } else {
+            HomeScreen(
+                onProductClick = { product ->
+                    selectedProduct = product
+                },
+                onMenuClick = {
+                    scope.launch { drawerState.open() }
+                }
+            )
+        }
+    }
+}
+
+@Composable
+fun HomeScreen(
+    onProductClick: (Product) -> Unit = {},
+    onMenuClick: () -> Unit = {}
+) {
+    val context = LocalContext.current
     val snackbarHostState = remember { SnackbarHostState() }
 
-    // Sample data for the product sections
     val ultimasNovidades = remember {
         listOf(
             Product(id = "1", title = "Produto legal de MDF de 3mmx9mm", price = "R$999,99", installments = "Em 3x sem juros"),
@@ -71,92 +130,68 @@ fun HomeScreen() {
         )
     }
 
-    ModalNavigationDrawer(
-        drawerState = drawerState,
-        drawerContent = {
-            DrawerContent(
-                onItemSelect = { item ->
-                    scope.launch {
-                        drawerState.close()
-                    }
-                    Toast.makeText(context, "Navegando para: $item", Toast.LENGTH_SHORT).show()
+    Scaffold(
+        modifier = Modifier.statusBarsPadding(),
+        containerColor = BwartsDarkBg,
+        snackbarHost = { SnackbarHost(snackbarHostState) },
+        topBar = {
+            HeaderBar(
+                cartItemCount = 3,
+                onMenuClick = onMenuClick,
+                onSearchClick = {
+                    Toast.makeText(context, "Abrir busca de produtos", Toast.LENGTH_SHORT).show()
+                },
+                onCartClick = {
+                    Toast.makeText(context, "Abrir carrinho (3 itens)", Toast.LENGTH_SHORT).show()
                 }
             )
         }
-    ) {
-        Scaffold(
-            modifier = Modifier.statusBarsPadding(),
-            containerColor = BwartsDarkBg,
-            snackbarHost = { SnackbarHost(snackbarHostState) },
-            topBar = {
-                HeaderBar(
-                    cartItemCount = 3,
-                    onMenuClick = {
-                        scope.launch {
-                            drawerState.open()
-                        }
-                    },
-                    onSearchClick = {
-                        Toast.makeText(context, "Abrir busca de produtos", Toast.LENGTH_SHORT).show()
-                    },
-                    onCartClick = {
-                        Toast.makeText(context, "Abrir carrinho (3 itens)", Toast.LENGTH_SHORT).show()
+    ) { innerPadding ->
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding)
+                .background(BwartsDarkBg)
+        ) {
+            // Carrossel promocional
+            item {
+                PromoCarousel()
+            }
+
+            // Ultimas novidades - produtos
+            item {
+                ProdutoSecao(
+                    title = "Últimas novidades",
+                    products = ultimasNovidades,
+                    onProductClick = onProductClick
+                )
+            }
+
+            // Baseado em suas pesquisas - produtos
+            item {
+                ProdutoSecao(
+                    title = "Baseado em suas pesquisas",
+                    products = baseadoEmPesquisas,
+                    onProductClick = onProductClick
+                )
+            }
+
+            // Banner de personalização
+            item {
+                PersonalizationBanner(
+                    onBannerClick = {
+                        Toast.makeText(context, "Abrindo personalização de produtos!", Toast.LENGTH_SHORT).show()
                     }
                 )
             }
-        ) { innerPadding ->
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(innerPadding)
-                    .background(BwartsDarkBg)
-            ) {
-                // Carrossel promocional
-                item {
-                    PromoCarousel()
-                }
 
-                // Ultimas novidades - produtos
-                item {
-                    ProdutoSecao (
-                        title = "Últimas novidades",
-                        products = ultimasNovidades,
-                        onProductClick = { product ->
-                            // TODO: Mudar para nagevação entre as páginas aqui
-                            Toast.makeText(context, "Clicou em: ${product.title}", Toast.LENGTH_SHORT).show()
-                        }
-                    )
-                }
-
-                // Baseado em suas pesquisas - produtos
-                item {
-                    ProdutoSecao (
-                        title = "Baseado em suas pesquisas",
-                        products = baseadoEmPesquisas,
-                        onProductClick = { product ->
-                            // TODO: Mudar para nagevação entre as páginas aqui
-                            Toast.makeText(context, "Clicou em: ${product.title}", Toast.LENGTH_SHORT).show()
-                        }
-                    )
-                }
-
-                // Banner de personalização
-                item {
-                    PersonalizationBanner(
-                        onBannerClick = {
-                            Toast.makeText(context, "Abrindo personalização de produtos!", Toast.LENGTH_SHORT).show()
-                        }
-                    )
-                }
-
-                // Footer
-                item {
-                    FooterSection(
-                        onLinkClick = { link ->
-                            Toast.makeText(context, "Acessando: $link", Toast.LENGTH_SHORT).show()
-                        }
-                    )
-                }
+            // Footer
+            item {
+                FooterSection(
+                    onLinkClick = { link ->
+                        Toast.makeText(context, "Acessando: $link", Toast.LENGTH_SHORT).show()
+                    }
+                )
             }
         }
     }
@@ -166,6 +201,6 @@ fun HomeScreen() {
 @Composable
 fun HomeScreenPreview() {
     BwartsTheme {
-        HomeScreen()
+        BwartsApp()
     }
 }

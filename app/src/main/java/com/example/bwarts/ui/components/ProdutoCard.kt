@@ -30,9 +30,17 @@ import com.example.bwarts.ui.theme.BwartsTextMuted
 
 data class Product(
     val id: String,
-    val title: String = "Produto legal de MDF de 3mmx9mm",
+    val title: String = "Produto muito legal de MDF de 3mm x 9mm - mdf",
     val price: String = "R$999,99",
-    val installments: String = "Em 3x sem juros"
+    val installments: String = "Em até 3x sem juros",
+    val rating: Double = 5.0,
+    val reviewCount: Int = 100,
+    val units: List<String> = listOf("3mm", "6mm", "9mm"),
+    val description: String = "Produto muito legal de madeira, feito em corte laser, muita qualidade e produto bom.",
+    val width: String = "21mm",
+    val height: String = "30mm",
+    val material: String = "mdf 3,4,5",
+    val shipping: String = "Entrega para todo o país."
 )
 
 @Composable

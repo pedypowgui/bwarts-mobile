@@ -23,7 +23,6 @@ import androidx.compose.ui.unit.dp
 import com.example.bwarts.R
 
 @Composable
-@Preview
 fun PersonalizationBanner(
     onBannerClick: () -> Unit = {},
     modifier: Modifier = Modifier

@@ -3,6 +3,7 @@ package com.example.bwarts.ui.components
 import com.example.bwarts.R
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -36,7 +37,8 @@ fun HeaderBar(
     cartItemCount: Int = 3,
     onMenuClick: () -> Unit = {},
     onSearchClick: () -> Unit = {},
-    onCartClick: () -> Unit = {}
+    onCartClick: () -> Unit = {},
+    onLogoClick: () -> Unit = {}
 ) {
     Row(
         modifier = Modifier
@@ -61,8 +63,8 @@ fun HeaderBar(
             contentDescription = "Logo BWarts",
             modifier = Modifier
                 .width(90.dp)
-                .padding(0.dp)
                 .height(40.dp)
+                .clickable { onLogoClick() }
         )
 
         // Pesquisa e carrinho
